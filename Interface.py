@@ -42,8 +42,8 @@ def main():
         ],
         [
             sg.Text("Flip",size=(14,1)),
-            sg.Button("Horizontal",key="-HOR-FLIP-", size=(8, 1), enable_events=True),
-            sg.Button("Vertical",key="-VER-FLIP-" ,size=(8, 1), enable_events=True)
+            sg.Button("Horizontal",key="-H-FLIP-", size=(8, 1), enable_events=True),
+            sg.Button("Vertical",key="-V-FLIP-" ,size=(8, 1), enable_events=True)
         ],
         [
             sg.Text("Crop", size=(14, 1)),
@@ -124,12 +124,6 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("OpenCV Integration", layout, location=(800, 400),resizable=True)
 
-    def image_to_bytes(img):
-        im_file = BytesIO()
-        img.save(im_file, format="PNG")
-        im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
-        im_b64 = base64.b64encode(im_bytes)
-        return im_b64
     def convert_to_bytes(file_or_bytes, resize=None):
         '''
         Will convert into bytes and optionally resize an image that is a file or a base64 bytes object.
@@ -173,13 +167,32 @@ def main():
             image.save(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
         elif event == "-ROT-90-" :
-            image=Image.open(filename)
-            image=asarray(image)
-            rotated_image=cv.rotate(image,cv.ROTATE_90_CLOCKWISE)
-            rotated_image=Image.fromarray(rotated_image)
-            rotated_image.save(filename)
+            filename= Main.rotate_image_90(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
-        # elif values["-THRESH-"]:
+
+        elif event == "-ROT-180-":
+            filename = Main.rotate_image_180(filename)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event == "-ROT-270-":
+            filename = Main.rotate_image_270(filename)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event == "-H-FLIP-":
+            filename= Main.h_flip(filename)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event == "-V-FLIP-":
+            filename= Main.v_flip(filename)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event=="-RESIZE-APPLY-":
+            if(int(values["-X-"])>0 and int(values["-X-"])>0):
+                X=int(values["-X-"])
+                Y=int(values["-Y-"])
+                filename=Main.resize_image(filename,X,Y)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(X, Y)))
+                # elif values["-THRESH-"]:
         #     if filename != None:
         #         image=Image.open(filename)
         #         frame = asarray(image)

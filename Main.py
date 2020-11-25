@@ -59,7 +59,7 @@ def plot_equalized_histogram(image,reference,matched_image):
 
 
 #resize,rotation,cropping,swirling, gibi 5 farklı donusum islemi
-def rotate_image(filename):
+def rotate_image_90(filename):
     image = Image.open(filename)
     image = asarray(image)
     rotated_image = cv.rotate(image, cv.ROTATE_90_CLOCKWISE)
@@ -67,12 +67,45 @@ def rotate_image(filename):
     rotated_image.save(filename)
     return filename
 
+def rotate_image_180(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    rotated_image = cv.rotate(image, cv.ROTATE_180)
+    rotated_image = Image.fromarray(rotated_image)
+    rotated_image.save(filename)
+    return filename
 
+def rotate_image_270(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    rotated_image = cv.rotate(image, cv.ROTATE_90_COUNTERCLOCKWISE)
+    rotated_image = Image.fromarray(rotated_image)
+    rotated_image.save(filename)
+    return filename
 
-def resize_image(image,amount):
-    image_resized = resize(image, (amount[0],amount[1]), anti_aliasing=True)
-    io.imshow(image_resized)
-    io.show()
+def h_flip(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    rotated_image = cv.flip(image,1)
+    rotated_image = Image.fromarray(rotated_image)
+    rotated_image.save(filename)
+    return filename
+
+def v_flip(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    rotated_image = cv.flip(image,0)
+    rotated_image = Image.fromarray(rotated_image)
+    rotated_image.save(filename)
+    return filename
+
+def resize_image(filename,amount1,amount2):
+    image = Image.open(filename)
+    image = asarray(image)
+    image_resized = cv.resize(image, (amount1,amount2),interpolation=cv.INTER_NEAREST)
+    image_resized=Image.fromarray(image_resized)
+    image_resized.save(filename)
+    return filename
 
 def swirl_image(image,strength,radius):
     swirled_image = swirl(image, rotation=0, strength=strength, radius=radius)
