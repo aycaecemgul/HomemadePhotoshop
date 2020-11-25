@@ -75,80 +75,40 @@ def main():
         [
             sg.HorizontalSeparator(color="White")
         ],
-        [sg.Text("Görüntü İyileştirme İşlemleri",size=(24, 1))],
-        [sg.Text("Choose a filter:",size=(12, 1)),sg.Combo(['c1', 'c2', 'c3'], size=(8, 3), key='_COMBO_'),
+        [
+            sg.Text("Görüntü İyileştirme İşlemleri",size=(24, 1))],
+        [sg.Text("Choose a filter:",size=(12, 1)),
+         sg.Combo(['Wiener',"Prewitt V","Prewitt H", "Hessian",'Median ', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
          sg.Slider(
              (0, 255),
              128,
              1,
              orientation="h",
              size=(20, 10),
-             key="-IYILESTIRME SLIDER-",
+             key="-IYI-SLIDER-",
          ),
-         sg.Button("Apply", size=(8, 1), key="-IYILESTIRME  -APPLY-", enable_events=True)],
-        # [
-        #     sg.Radio("threshold", "Radio", size=(10, 1), key="-THRESH-"),
-        #     sg.Slider(
-        #         (0, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-THRESH SLIDER-",
-        #     ),
-        # ],
-        # [
-        #     sg.Radio("canny", "Radio", size=(10, 1), key="-CANNY-"),
-        #     sg.Slider(
-        #         (0, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(20, 15),
-        #         key="-CANNY SLIDER A-",
-        #     ),
-        #     sg.Slider(
-        #         (0, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(20, 15),
-        #         key="-CANNY SLIDER B-",
-        #     ),
-        # ],
-        # [
-        #     sg.Radio("blur", "Radio", size=(10, 1), key="-BLUR-"),
-        #     sg.Slider(
-        #         (1, 11),
-        #         1,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-BLUR SLIDER-",
-        #     ),
-        # ],
-        # [
-        #     sg.Radio("hue", "Radio", size=(10, 1), key="-HUE-"),
-        #     sg.Slider(
-        #         (0, 225),
-        #         0,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-HUE SLIDER-",
-        #     ),
-        # ],
-        # [
-        #     sg.Radio("enhance", "Radio", size=(10, 1), key="-ENHANCE-"),
-        #     sg.Slider(
-        #         (1, 255),
-        #         128,
-        #         1,
-        #         orientation="h",
-        #         size=(40, 15),
-        #         key="-ENHANCE SLIDER-",
-        #     ),
-        # ],
+         sg.Button("Apply", size=(8, 1), key="-IYILESTIRME-APPLY-", enable_events=True)],
+        [
+            sg.HorizontalSeparator(color="White")
+        ],
+        [
+            sg.Text("Yoğunluk Dönüşümü İşlemleri")
+        ],
+        [
+            sg.Combo(["","","","","",""],size=(17,3),enable_events=True,key="-YOG-COMBO-"),
+            sg.Button("Apply", size=(10, 1), key="-YOG-APPLY-", enable_events=True)
+        ],
+        [
+            sg.HorizontalSeparator(color="White")
+        ],
+        [sg.Text("Morphological Operations", size=(18, 1))],
+        [
+            sg.Text("Choose an operation:", size=(18, 1)),
+            sg.Combo(['Dilation', 'Erosion', 'Thin','Skeletonize','Skeletonize-3D',
+                      'Opening',"Closing","Convex Hull","White Tophat","Black Tophat"],
+                     size=(17, 4), key='-MORP-COMBO-',enable_events=True),
+         sg.Button("Apply", size=(10, 1), key="-IYILESTIRME-APPLY-", enable_events=True)
+         ],
         [
             sg.HorizontalSeparator(color="White")
         ],
@@ -158,9 +118,7 @@ def main():
         [
             sg.Button("Save", size=(8, 1)),
          sg.Button("Exit", size=(8, 1))
-        ],
-
-
+        ]
     ]
 
     # Create the window and show it without the plot

@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import data, io, filters, feature, exposure, color, util, img_as_float
 import skimage.io as io
-from skimage.morphology import closing,square
+from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing
 from skimage.color import rgb2gray
-from skimage.transform import rotate,swirl,rescale, resize
+from skimage.transform import *
 import scipy
 from scipy import misc
 import cv2 as cv
@@ -89,9 +89,13 @@ def rescale_image(image,amount):
 #morfolojik işlemler (10 farklı morfolojik işlem icermeli)
 
 
-#aşındırma(erosion)
-def erosion():
-    print("")
+from skimage.morphology import square,skeletonize_3d,thin,disk, dilation,erosion,skeletonize
+from skimage.util import invert
+
+#new_image = dilation(image)
+#new_image=erosion(image)
+#image=thin(data.horse())
+#image=skeletonize_3d(data.horse())
 
 #insta filtresi oluştur.
 
