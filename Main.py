@@ -1,6 +1,8 @@
 import skimage
 import numpy as np
 import matplotlib.pyplot as plt
+from PIL import Image
+from numpy import asarray
 from skimage import data, io, filters, feature, exposure, color, util, img_as_float
 import skimage.io as io
 from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing
@@ -57,10 +59,13 @@ def plot_equalized_histogram(image,reference,matched_image):
 
 
 #resize,rotation,cropping,swirling, gibi 5 farklı donusum islemi
-def rotate_image(image,degree):
-
-    rotated_image=rotate(image,degree)
-    return rotated_image
+def rotate_image(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    rotated_image = cv.rotate(image, cv.ROTATE_90_CLOCKWISE)
+    rotated_image = Image.fromarray(rotated_image)
+    rotated_image.save(filename)
+    return filename
 
 
 

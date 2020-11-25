@@ -10,7 +10,7 @@ import numpy as np
 from numpy import asarray
 from skimage.transform import rotate
 import Main
-
+from io import BytesIO
 
 def main():
     sg.theme("Black")
@@ -124,6 +124,12 @@ def main():
     # Create the window and show it without the plot
     window = sg.Window("OpenCV Integration", layout, location=(800, 400),resizable=True)
 
+    def image_to_bytes(img):
+        im_file = BytesIO()
+        img.save(im_file, format="PNG")
+        im_bytes = im_file.getvalue()  # im_bytes: image in binary format.
+        im_b64 = base64.b64encode(im_bytes)
+        return im_b64
     def convert_to_bytes(file_or_bytes, resize=None):
         '''
         Will convert into bytes and optionally resize an image that is a file or a base64 bytes object.
@@ -162,8 +168,17 @@ def main():
             break
         if event == '-FILE-':
             filename = values['-FILE-'] #!!!!!!!!!!
+            image=Image.open(filename)
+            filename=filename[:-4] + '-converted.png'
+            image.save(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
-
+        elif event == "-ROT-90-" :
+            image=Image.open(filename)
+            image=asarray(image)
+            rotated_image=cv.rotate(image,cv.ROTATE_90_CLOCKWISE)
+            rotated_image=Image.fromarray(rotated_image)
+            rotated_image.save(filename)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
         # elif values["-THRESH-"]:
         #     if filename != None:
         #         image=Image.open(filename)
@@ -173,18 +188,9 @@ def main():
         #     frame = cv2.Canny(
         #         frame, values["-CANNY SLIDER A-"], values["-CANNY SLIDER B-"]
         #     )
-        elif event == "-APPLY-":
 
-            degree = int(values["-ROTATE-SLIDER-"])
-            src = Image.open(filename)
-            src=asarray(src)
-            rotated_image_array=rotate(src,degree,resize=True)
-            filename = filename[:-4]
-            filename+="-rotated.png"
-            rotated_image = Image.fromarray(rotated_image_array, 'RGB')
-            rotated_image.save(filename)
-            rotated_image.show()
-            window['-IMAGE-'].update(data=convert_to_bytes(filename,resize=(400,400)))
+
+
         # elif values["-HUE-"]:
         #     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         #     frame[:, :, 0] += int(values["-HUE SLIDER-"])
