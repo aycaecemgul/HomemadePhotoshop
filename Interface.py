@@ -17,10 +17,13 @@ def main():
 
     # Define the window layout
     layout = [
+        [sg.HorizontalSeparator(color="White")],
         [sg.Text("Image Processing Project 1 By Ayça Ecem Gül", size=(60, 1), justification="center")],
+        [sg.HorizontalSeparator(color="White")],
         [sg.Text('Choose an image', size=(14, 1)), sg.Input(key='-FILE-', enable_events=True), sg.FileBrowse()],
         [sg.Image(key='-IMAGE-',enable_events=True)],
         [sg.Image(key='-IMAGE1-',enable_events=True)],
+        [sg.HorizontalSeparator(color="White")],
         [
             sg.Text("Rotate",size=(14,1)),
             sg.Button("90",size=(8,1),key="-ROT-90-",enable_events=True),
@@ -59,15 +62,30 @@ def main():
             ),
             sg.Button("Apply", size=(8, 1), key="-SWIRL-APPLY-", enable_events=True)
         ],
+
+        [
+            sg.HorizontalSeparator(color="White")
+        ],
         [
             sg.Text("Histogram Equalization",size=(24,1))
         ],
         [
             sg.Text("Choose an image to equalize" ,size=(24, 1)), sg.Input(key='-FILE2-', enable_events=True), sg.FileBrowse()
         ],
-        [sg.Text("Try Ayça's special instagram filter!",size=(27,1)),
-         sg.Button("Apply",size=(8, 1), key="-INSTA-APPLY-",enable_events=True)],
-        # [sg.Radio("None", "Radio", True, size=(10, 1))],
+        [
+            sg.HorizontalSeparator(color="White")
+        ],
+        [sg.Text("Görüntü İyileştirme İşlemleri",size=(24, 1))],
+        [sg.Text("Choose a filter:",size=(12, 1)),sg.Combo(['c1', 'c2', 'c3'], size=(8, 3), key='_COMBO_'),
+         sg.Slider(
+             (0, 255),
+             128,
+             1,
+             orientation="h",
+             size=(20, 10),
+             key="-IYILESTIRME SLIDER-",
+         ),
+         sg.Button("Apply", size=(8, 1), key="-IYILESTIRME  -APPLY-", enable_events=True)],
         # [
         #     sg.Radio("threshold", "Radio", size=(10, 1), key="-THRESH-"),
         #     sg.Slider(
@@ -131,8 +149,18 @@ def main():
         #         key="-ENHANCE SLIDER-",
         #     ),
         # ],
-        [sg.Button("Save", size=(8, 1)),
-         sg.Button("Exit", size=(8, 1))]
+        [
+            sg.HorizontalSeparator(color="White")
+        ],
+        [sg.Text("Try Ayça's special instagram filter!", size=(27, 1)),
+         sg.Button("Apply", size=(8, 1), key="-INSTA-APPLY-", enable_events=True)
+         ],
+        [
+            sg.Button("Save", size=(8, 1)),
+         sg.Button("Exit", size=(8, 1))
+        ],
+
+
     ]
 
     # Create the window and show it without the plot
