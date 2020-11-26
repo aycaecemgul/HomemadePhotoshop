@@ -52,13 +52,23 @@ def main():
         ],
         [
             sg.Text("Swirl", size=(14, 1)),
+            sg.Text("Strength", size=(10, 1)),
             sg.Slider(
-                (0, 255),
-                128,
+                (0, 500),
+                250,
                 1,
                 orientation="h",
-                size=(20, 10),
-                key="-SWIRL SLIDER-",
+                size=(10, 10),
+                key="-SWIRL-SLIDER-",
+            ),
+            sg.Text("Radius", size=(10, 1)),
+            sg.Slider(
+                (0, 500),
+                250,
+                1,
+                orientation="h",
+                size=(10, 10),
+                key="-SWIRL-SLIDER2-",
             ),
             sg.Button("Apply", size=(8, 1), key="-SWIRL-APPLY-", enable_events=True)
         ],
@@ -122,7 +132,7 @@ def main():
     ]
 
     # Create the window and show it without the plot
-    window = sg.Window("OpenCV Integration", layout, location=(800, 400),resizable=True)
+    window = sg.Window("OpenCV Integration", layout, location=(500,20),resizable=True)
 
     def convert_to_bytes(file_or_bytes, resize=None):
         '''
@@ -193,16 +203,26 @@ def main():
                 filename=Main.resize_image(filename,X,Y)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(X, Y)))
                 # elif values["-THRESH-"]:
-        #     if filename != None:
-        #         image=Image.open(filename)
-        #         frame = asarray(image)
-        #         window['-IMAGE-'].update(data=convert_to_bytes(frame, resize=(400, 400)))
-        # elif values["-CANNY-"]:
-        #     frame = cv2.Canny(
-        #         frame, values["-CANNY SLIDER A-"], values["-CANNY SLIDER B-"]
-        #     )
+        elif event=="-SWIRL-APPLY-":
+            strength=float(values["-SWIRL-SLIDER-"])
+            radius=float(values["-SWIRL-SLIDER2-"])
+            filename=Main.swirl_image(filename,strength,radius)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename,resize=(400, 400)))
 
+        #!!!!!!!!!!!!!!
+        elif event=="-CROP-APPLY-":
+            x1=int(values["-CROPX1-"])
+            x2 = int(values["-CROPX2-"])
+            y1=int(values["-CROPY1-"])
+            y2=int(values["-CROPY2-"])
 
+            filename=Main.crop_image(filename,x1,x2,y1,y2)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+        #!!!!!!!!!!!!!!!!!!!!!!
+        elif event == "-RESCALE-APPLY-":
+            amount=float(values["-RESCALE-AMOUNT-"])
+            filename=Main.rescale_image(filename,amount)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
         # elif values["-HUE-"]:
         #     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)

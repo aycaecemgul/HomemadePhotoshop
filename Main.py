@@ -107,26 +107,32 @@ def resize_image(filename,amount1,amount2):
     image_resized.save(filename)
     return filename
 
-def swirl_image(image,strength,radius):
-    swirled_image = swirl(image, rotation=0, strength=strength, radius=radius)
-    io.imshow(swirled_image)
-    io.show()
+def swirl_image(filename,strength,radius):
+    image = Image.open(filename)
+    image = asarray(image)
+    swirled_image = swirl(image, rotation=5, strength=strength, radius=radius,mode='reflect')
+    swirled = Image.fromarray((swirled_image * 255).astype(np.uint8))
+    swirled.save(filename)
+    return filename
 
-def crop_image(image,crop_width):
-    cropped_image=crop(image,crop_width,copy=True)
-    io.imshow(cropped_image)
-    io.show()
+def crop_image(filename,x1,x2,y1,y2):
+    image = Image.open(filename)
+    image = asarray(image)
+    crop_img = image[y1:y2, x1:x2]
+    cropped_image=Image.fromarray(crop_img)
+    cropped_image.save(filename)
+    return filename
 
-def rescale_image(image,amount):
-    rescaled_image=rescale(image,amount, anti_aliasing=False)
-    io.imshow(rescaled_image)
-    io.show()
+def rescale_image(filename,amount):
+    image = Image.open(filename)
+    image = asarray(image)
+    rescaled_image=rescale(image,amount)
+    rescaled_image.save(filename)
+    return filename
 
 #yogunluk donusumu işlemleri (degerleri kullanıcı verebilmeli)
 
 #morfolojik işlemler (10 farklı morfolojik işlem icermeli)
-
-
 from skimage.morphology import square,skeletonize_3d,thin,disk, dilation,erosion,skeletonize
 from skimage.util import invert
 
