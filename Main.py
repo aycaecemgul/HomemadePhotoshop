@@ -126,8 +126,11 @@ def crop_image(filename,x1,x2,y1,y2):
 def rescale_image(filename,amount):
     image = Image.open(filename)
     image = asarray(image)
-    rescaled_image=rescale(image,amount)
-    rescaled_image.save(filename)
+    w = int(image.shape[1]*amount)
+    h = int(image.shape[0] * amount)
+    image_resized = cv.resize(image, (w,h), interpolation=cv.INTER_AREA)
+    image_resized=Image.fromarray(image_resized)
+    image_resized.save(filename)
     return filename
 
 #yogunluk donusumu işlemleri (degerleri kullanıcı verebilmeli)

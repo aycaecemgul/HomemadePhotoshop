@@ -21,8 +21,8 @@ def main():
         [sg.Text("Image Processing Project 1 By Ayça Ecem Gül", size=(60, 1), justification="center")],
         [sg.HorizontalSeparator(color="White")],
         [sg.Text('Choose an image', size=(14, 1)), sg.Input(key='-FILE-', enable_events=True), sg.FileBrowse()],
-        [sg.Image(key='-IMAGE-',enable_events=True)],
-        [sg.Image(key='-IMAGE1-',enable_events=True)],
+        [sg.Image(key='-IMAGE-',enable_events=True),
+         sg.Image(key='-IMAGE1-',enable_events=True)],
         [sg.HorizontalSeparator(color="White")],
         [
             sg.Text("Rotate",size=(14,1)),
@@ -80,8 +80,11 @@ def main():
             sg.Text("Histogram Equalization",size=(24,1))
         ],
         [
-            sg.Text("Choose an image to equalize" ,size=(24, 1)), sg.Input(key='-FILE2-', enable_events=True), sg.FileBrowse()
+            sg.Text("Choose an image to equalize" ,size=(24, 1)), sg.Input(key='-FILE2-', enable_events=True), sg.FileBrowse(),
+            sg.Button("Equalize", size=(8, 1), key="-HISTO-APPLY-", enable_events=True)
         ],
+        [sg.Text("Histogram Equalization Plot"),
+         sg.Button("Create",size=(8, 1), key="-HISTO-APPLY-", enable_events=True)],
         [
             sg.HorizontalSeparator(color="White")
         ],
@@ -218,25 +221,21 @@ def main():
 
             filename=Main.crop_image(filename,x1,x2,y1,y2)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
-        #!!!!!!!!!!!!!!!!!!!!!!
+
+        # 0 ile 1 arası bir değer alır.
         elif event == "-RESCALE-APPLY-":
             amount=float(values["-RESCALE-AMOUNT-"])
-            filename=Main.rescale_image(filename,amount)
-            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+            if(0<amount<=1):
+                filename = Main.rescale_image(filename, amount)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(
+                400 // amount, 400 // amount)))  # GUI de gosterimi kolay olsun diye
+        elif event =="-FILE2-":
+            filename = values['-FILE2-']
+            image = Image.open(filename)
+            filename = filename[:-4] + '-converted-histogram.png'
+            image.save(filename)
+            window['-IMAGE1-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
-        # elif values["-HUE-"]:
-        #     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        #     frame[:, :, 0] += int(values["-HUE SLIDER-"])
-        #     frame = cv2.cvtColor(frame, cv2.COLOR_HSV2BGR)
-        # elif values["-ENHANCE-"]:
-        #     enh_val = values["-ENHANCE SLIDER-"] / 40
-        #     clahe = cv2.createCLAHE(clipLimit=enh_val, tileGridSize=(8, 8))
-        #     lab = cv2.cvtColor(frame, cv2.COLOR_BGR2LAB)
-        #     lab[:, :, 0] = clahe.apply(lab[:, :, 0])
-        #     frame = cv2.cvtColor(lab, cv2.COLOR_LAB2BGR)
-        #
-        # imgbytes = cv2.imencode(".png", frame)[1].tobytes()
-        # window["-IMAGE-"].update(data=imgbytes)
 
     window.close()
 
