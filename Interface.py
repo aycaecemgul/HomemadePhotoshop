@@ -84,14 +84,14 @@ def main():
             sg.Button("Equalize", size=(8, 1), key="-HISTO-APPLY-", enable_events=True)
         ],
         [sg.Text("Histogram Equalization Plot"),
-         sg.Button("Create",size=(8, 1), key="-HISTO-APPLY-", enable_events=True)],
+         sg.Button("Create",size=(8, 1), key="-HISTO-PLOT-APPLY-", enable_events=True)],
         [
             sg.HorizontalSeparator(color="White")
         ],
         [
             sg.Text("Görüntü İyileştirme İşlemleri",size=(24, 1))],
         [sg.Text("Choose a filter:",size=(12, 1)),
-         sg.Combo(['Wiener',"Prewitt V","Prewitt H", "Hessian",'Median ', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
+         sg.Combo(['Wiener',"Prewitt V","Prewitt H", "Hessian",'Median', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
          sg.Slider(
              (0, 255),
              128,
@@ -168,6 +168,7 @@ def main():
         return bio.getvalue()
 
     while True:
+        secondImage=None
         event, values = window.read()
         if event in (sg.WIN_CLOSED, 'Exit'):
             break
@@ -212,7 +213,6 @@ def main():
             filename=Main.swirl_image(filename,strength,radius)
             window['-IMAGE-'].update(data=convert_to_bytes(filename,resize=(400, 400)))
 
-        #!!!!!!!!!!!!!!
         elif event=="-CROP-APPLY-":
             x1=int(values["-CROPX1-"])
             x2 = int(values["-CROPX2-"])
@@ -230,11 +230,42 @@ def main():
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(
                 400 // amount, 400 // amount)))  # GUI de gosterimi kolay olsun diye
         elif event =="-FILE2-":
-            filename = values['-FILE2-']
-            image = Image.open(filename)
-            filename = filename[:-4] + '-converted-histogram.png'
-            image.save(filename)
-            window['-IMAGE1-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+            filename2 = values['-FILE2-']
+            image2 = Image.open(filename2)
+            filename2 = filename2[:-4] + '-converted-histogram.png'
+            image2.save(filename2)
+            secondImage=True
+            window['-IMAGE1-'].update(data=convert_to_bytes(filename2, resize=(400, 400)))
+
+        elif event=="-HISTO-APPLY-":
+            filename,histogram_plot=Main.equalize_histogram(filename, filename2)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
+            histo=True
+        elif event=="-HISTO-PLOT-APPLY-":
+            histogram_plot.show()
+
+        elif event=="-IYILESTIRME-APPLY-" :
+            value=int(values["-IYI-SLIDER-"])
+            if '-IYI-COMBO-' == "Wiener":
+                pass
+            elif '-IYI-COMBO-'=="Prewitt V":
+                pass
+            elif '-IYI-COMBO-'=="Prewitt H":
+                pass
+            elif '-IYI-COMBO-'=="Hessian":
+                pass
+            elif '-IYI-COMBO-'=='Median':
+                pass
+            elif '-IYI-COMBO-'=="Meijering":
+                pass
+            elif '-IYI-COMBO-'=="Frangi":
+                pass
+            elif '-IYI-COMBO-'=="Laplacian":
+                pass
+            elif '-IYI-COMBO-'=="Gaussian":
+                pass
+            elif '-IYI-COMBO-'=='Sato':
+                pass
 
 
     window.close()
