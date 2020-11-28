@@ -5,6 +5,7 @@ from PIL import Image
 from numpy import asarray
 from skimage import data, io, filters, feature, exposure, color, util, img_as_float
 import skimage.io as io
+from skimage.filters import LPIFilter2D
 from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing
 from skimage.color import rgb2gray
 from skimage.transform import *
@@ -19,7 +20,41 @@ from skimage.exposure import match_histograms
 #goruntu iyileştirme islemleri,filtreler
 #'Wiener', "Prewitt V", "Prewitt H", "Hessian", 'Median', "Meijering", "Frangi", "Laplacian", "Gaussian", 'Sato'
 
+def wiener_filter(filename,amount):
+    image = Image.open(filename)
+    image = asarray(image)
+    image = rgb2gray(image)
+    psf=np.ones((5,5))/25
+    image=skimage.filters.wiener(image,impulse_response=psf)
+    image = Image.fromarray(image)
+    image.save(filename)
+    return filename
+def prewitt_v(filename,amount):
+    pass
 
+def prewitt_h(filename,amount):
+    pass
+
+def hessian_filter(filename,amount):
+    pass
+
+def median_filter(filename, amount):
+    pass
+
+def meijering_filter(filename, amount):
+    pass
+
+def frangi_filter(filename, amount):
+    pass
+
+def laplacian_filter(filename, amount):
+    pass
+
+def gaussian_filter(filename, amount):
+    pass
+
+def sato_filter(filename, amount):
+    pass
 
 #resize,rotation,cropping,swirling, gibi 5 farklı donusum islemi
 def rotate_image_90(filename):

@@ -15,7 +15,6 @@ from io import BytesIO
 def main():
     sg.theme("Black")
 
-    # Define the window layout
     layout = [
         [sg.HorizontalSeparator(color="White")],
         [sg.Text("Image Processing Project 1 By Ayça Ecem Gül", size=(60, 1), justification="center")],
@@ -134,20 +133,11 @@ def main():
         ]
     ]
 
-    # Create the window and show it without the plot
-    window = sg.Window("OpenCV Integration", layout, location=(500,20),resizable=True)
+    window = sg.Window("OpenCV Integration",resizable=True).Layout(
+        [[sg.Column(layout,size=(800,1200), scrollable=True,grab=True,justification="c")]])
 
     def convert_to_bytes(file_or_bytes, resize=None):
-        '''
-        Will convert into bytes and optionally resize an image that is a file or a base64 bytes object.
-        Turns into  PNG format in the process so that can be displayed by tkinter
-        :param file_or_bytes: either a string filename or a bytes base64 image object
-        :type file_or_bytes:  (Union[str, bytes])
-        :param resize:  optional new size
-        :type resize: (Tuple[int, int] or None)
-        :return: (bytes) a byte-string object
-        :rtype: (bytes)
-        '''
+
         if isinstance(file_or_bytes, str):
             img = PIL.Image.open(file_or_bytes)
         else:
@@ -245,27 +235,48 @@ def main():
             histogram_plot.show()
 
         elif event=="-IYILESTIRME-APPLY-" :
-            value=int(values["-IYI-SLIDER-"])
-            if '-IYI-COMBO-' == "Wiener":
-                pass
-            elif '-IYI-COMBO-'=="Prewitt V":
-                pass
-            elif '-IYI-COMBO-'=="Prewitt H":
-                pass
-            elif '-IYI-COMBO-'=="Hessian":
-                pass
-            elif '-IYI-COMBO-'=='Median':
-                pass
-            elif '-IYI-COMBO-'=="Meijering":
-                pass
-            elif '-IYI-COMBO-'=="Frangi":
-                pass
-            elif '-IYI-COMBO-'=="Laplacian":
-                pass
-            elif '-IYI-COMBO-'=="Gaussian":
-                pass
-            elif '-IYI-COMBO-'=='Sato':
-                pass
+            value=float(values["-IYI-SLIDER-"])
+            if values['-IYI-COMBO-'] == "Wiener":
+                print("here")
+                value=value/1000
+                filename=Main.wiener_filter(filename,value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Prewitt V":
+                filename = Main.prewitt_V(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Prewitt H":
+                filename = Main.prewitt_H(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Hessian":
+                filename = Main.hessian_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=='Median':
+                filename = Main.median_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Meijering":
+                filename = Main.meijering_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Frangi":
+                filename = Main.frangi_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Laplacian":
+                filename = Main.laplacian_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=="Gaussian":
+                filename = Main.gaussian_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-IYI-COMBO-']=='Sato':
+                filename = Main.sato_filter(filename, value)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
 
     window.close()
