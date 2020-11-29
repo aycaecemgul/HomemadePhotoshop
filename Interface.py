@@ -24,34 +24,32 @@ def main():
          sg.Image(key='-IMAGE1-',enable_events=True)],
         [sg.HorizontalSeparator(color="White")],
         [
-            sg.Text("Rotate",size=(14,1)),
+            sg.Text("Rotate",size=(7,1)),
             sg.Button("90",size=(8,1),key="-ROT-90-",enable_events=True),
             sg.Button("180", size=(8, 1),key="-ROT-180-", enable_events=True),
-            sg.Button("270",size=(8, 1),key="-ROT-270-", enable_events=True)
-        ],
-        [
-            sg.Text("Resize", size=(14, 1)),
-            sg.Input(key="-X-",size=(8,1)),sg.Input(key="-Y-",size=(8,1)),
-            sg.Button("Apply", size=(8, 1), key="-RESIZE-APPLY-", enable_events=True)
-        ],
-        [
-            sg.Text("Rescale",size=(14, 1)),
+            sg.Button("270",size=(8, 1),key="-ROT-270-", enable_events=True),
+            sg.VSeperator(),
+            sg.Text("Rescale", size=(7, 1)),
             sg.Input(key="-RESCALE-AMOUNT-", size=(8, 1)),
-            sg.Button("Apply", size=(8, 1), key="-RESCALE-APPLY-", enable_events=True)
+            sg.Button("Apply", size=(9, 1), key="-RESCALE-APPLY-", enable_events=True)
         ],
         [
-            sg.Text("Flip",size=(14,1)),
-            sg.Button("Horizontal",key="-H-FLIP-", size=(8, 1), enable_events=True),
-            sg.Button("Vertical",key="-V-FLIP-" ,size=(8, 1), enable_events=True)
+            sg.Text("Resize", size=(7, 1)),
+            sg.Input(key="-X-", size=(9, 1)), sg.Input(key="-Y-", size=(9, 1)),
+            sg.Button("Apply", size=(9, 1), key="-RESIZE-APPLY-", enable_events=True),
+            sg.VSeperator(),
+            sg.Text("Flip", size=(7, 1)),
+            sg.Button("Horizontal", key="-H-FLIP-", size=(8, 1), enable_events=True),
+            sg.Button("Vertical", key="-V-FLIP-", size=(8, 1), enable_events=True)
         ],
         [
-            sg.Text("Crop", size=(14, 1)),
+            sg.Text("Crop", size=(7, 1)),
             sg.Input(key="-CROPX1-",size=(5,1)),sg.Input(key="-CROPX2-",size=(5,1)),sg.Input(key="-CROPY1-",size=(5,1)),sg.Input(key="-CROPY2-",size=(5,1)),
             sg.Button("Apply", size=(8, 1), key="-CROP-APPLY-", enable_events=True)
         ],
         [
-            sg.Text("Swirl", size=(14, 1)),
-            sg.Text("Strength", size=(10, 1)),
+            sg.Text("Swirl", size=(7, 1)),
+            sg.Text("Strength", size=(7, 1)),
             sg.Slider(
                 (0, 500),
                 250,
@@ -60,7 +58,7 @@ def main():
                 size=(10, 10),
                 key="-SWIRL-SLIDER-",
             ),
-            sg.Text("Radius", size=(10, 1)),
+            sg.Text("Radius", size=(7, 1)),
             sg.Slider(
                 (0, 500),
                 250,
@@ -88,27 +86,16 @@ def main():
             sg.HorizontalSeparator(color="White")
         ],
         [
-            sg.Text("Görüntü İyileştirme İşlemleri",size=(24, 1))],
-        [sg.Text("Choose a filter:",size=(12, 1)),
-         sg.Combo(['Wiener',"Prewitt V","Prewitt H", "Hessian",'Median', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
-         sg.Slider(
-             (0, 255),
-             128,
-             1,
-             orientation="h",
-             size=(20, 10),
-             key="-IYI-SLIDER-",
-         ),
-         sg.Button("Apply", size=(8, 1), key="-IYILESTIRME-APPLY-", enable_events=True)],
-        [
-            sg.HorizontalSeparator(color="White")
-        ],
-        [
+            sg.Text("Görüntü İyileştirme İşlemleri",size=(41, 1)),
             sg.Text("Yoğunluk Dönüşümü İşlemleri")
         ],
         [
-            sg.Combo(["","","","","",""],size=(17,3),enable_events=True,key="-YOG-COMBO-"),
-            sg.Button("Apply", size=(10, 1), key="-YOG-APPLY-", enable_events=True)
+             sg.Text("Choose a filter:",size=(12, 1)),
+             sg.Combo(['Sobel',"Prewitt V","Prewitt H", "Hessian",'Median', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
+             sg.Button("Apply", size=(8, 1), key="-IYILESTIRME-APPLY-", enable_events=True),
+             sg.VSeperator(),
+             sg.Combo(["", "", "", "", "", ""], size=(17, 3), enable_events=True, key="-YOG-COMBO-"),
+             sg.Button("Apply", size=(10, 1), key="-YOG-APPLY-", enable_events=True)
         ],
         [
             sg.HorizontalSeparator(color="White")
@@ -133,8 +120,8 @@ def main():
         ]
     ]
 
-    window = sg.Window("OpenCV Integration",resizable=True).Layout(
-        [[sg.Column(layout,size=(800,1200), scrollable=True,grab=True,justification="c")]])
+    window = sg.Window("Image Processing Project 1",size=(1500,800),resizable=True).Layout(
+        [[sg.Column(layout, size=(1000,800),scrollable=True,justification="c")]])
 
     def convert_to_bytes(file_or_bytes, resize=None):
 
@@ -165,11 +152,12 @@ def main():
         if event == sg.WIN_CLOSED or event == 'Exit':
             break
         if event == '-FILE-':
-            filename = values['-FILE-'] #!!!!!!!!!!
+            filename = values['-FILE-']
             image=Image.open(filename)
             filename=filename[:-4] + '-converted.png'
             image.save(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
+
         elif event == "-ROT-90-" :
             filename= Main.rotate_image_90(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400,400)))
@@ -235,10 +223,9 @@ def main():
             histogram_plot.show()
 
         elif event=="-IYILESTIRME-APPLY-" :
-            value=float(values["-IYI-SLIDER-"])
-            if values['-IYI-COMBO-'] == "Wiener":
-                print("here")
-                filename=Main.wiener_filter(filename,value)
+
+            if values['-IYI-COMBO-'] == "Sobel":
+                filename=Main.sobel_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Prewitt V":
@@ -250,31 +237,31 @@ def main():
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Hessian":
-                filename = Main.hessian_filter(filename, value)
+                filename = Main.hessian_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=='Median':
-                filename = Main.median_filter(filename, value)
+                filename = Main.median_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Meijering":
-                filename = Main.meijering_filter(filename, value)
+                filename = Main.meijering_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Frangi":
-                filename = Main.frangi_filter(filename, value)
+                filename = Main.frangi_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Laplacian":
-                filename = Main.laplacian_filter(filename, value)
+                filename = Main.laplacian_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Gaussian":
-                filename = Main.gaussian_filter(filename, value)
+                filename = Main.gaussian_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=='Sato':
-                filename = Main.sato_filter(filename, value)
+                filename = Main.sato_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
 

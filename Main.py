@@ -7,7 +7,7 @@ from skimage import data, io, filters, feature, exposure, color, util, img_as_fl
 import skimage.io as io
 from skimage.filters import LPIFilter2D, wiener
 from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing
-from skimage.color import rgb2gray
+from skimage.color import rgb2gray, rgba2rgb
 from skimage.transform import *
 import scipy
 from scipy import misc
@@ -19,47 +19,82 @@ from scipy.signal import convolve2d
 
 
 #goruntu iyileştirme islemleri,filtreler
-#'Wiener', "Prewitt V", "Prewitt H", "Hessian", 'Median', "Meijering", "Frangi", "Laplacian", "Gaussian", 'Sato'
-
-def wiener_filter(filename):
+# "Sobel, ""Prewitt V", "Prewitt H", "Hessian", 'Median', "Meijering", "Frangi", "Laplacian", "Gaussian", 'Sato'
+def sobel_filter(filename):
+    img=asarray(Image.open(filename))
+    img=rgb2gray(img)
+    img=filters.sobel(img)
+    plt.imsave(filename,img)
     return filename
 
 def prewitt_V(filename):
     img=asarray(Image.open(filename))
     img=rgb2gray(img)
     img=filters.prewitt_v(img)
-    plt.imshow(img)
-    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.imsave(filename,img)
     return filename
 
 def prewitt_H(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
     img = filters.prewitt_h(img)
-    plt.imshow(img)
-    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.imsave(filename,img)
     return filename
 
-def hessian_filter(filename,amount):
-    pass
+#DONE
+def hessian_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.hessian(img,mode="reflect")
+    plt.imsave(filename,img)
+    return filename
+#DONE
+def median_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.median(img)
+    plt.imsave(filename,img)
+    return filename
 
-def median_filter(filename, amount):
-    pass
+#DONE
+def meijering_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.meijering(img)
+    plt.imsave(filename,img)
+    return filename
 
-def meijering_filter(filename, amount):
-    pass
+#DONE
+def frangi_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.frangi(img)
+    plt.imsave(filename,img)
+    return filename
 
-def frangi_filter(filename, amount):
-    pass
+#DONE ?
+def laplacian_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.laplace(img)
+    plt.imsave(filename,img)
+    return filename
 
-def laplacian_filter(filename, amount):
-    pass
+#DONE
+def gaussian_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.gaussian(img)
+    plt.imsave(filename,img)
+    return filename
 
-def gaussian_filter(filename, amount):
-    pass
-
-def sato_filter(filename, amount):
-    pass
+#DONE
+def sato_filter(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.sato(img)
+    plt.imsave(filename,img)
+    return filename
 
 #resize,rotation,cropping,swirling, gibi 5 farklı donusum islemi
 def rotate_image_90(filename):
