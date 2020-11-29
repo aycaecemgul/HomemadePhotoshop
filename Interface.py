@@ -238,16 +238,15 @@ def main():
             value=float(values["-IYI-SLIDER-"])
             if values['-IYI-COMBO-'] == "Wiener":
                 print("here")
-                value=value/1000
                 filename=Main.wiener_filter(filename,value)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Prewitt V":
-                filename = Main.prewitt_V(filename, value)
+                filename = Main.prewitt_V(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Prewitt H":
-                filename = Main.prewitt_H(filename, value)
+                filename = Main.prewitt_H(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values['-IYI-COMBO-']=="Hessian":

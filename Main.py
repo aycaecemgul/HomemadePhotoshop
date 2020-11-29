@@ -1,11 +1,11 @@
 import skimage
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image
+from PIL import Image, ImageOps
 from numpy import asarray
 from skimage import data, io, filters, feature, exposure, color, util, img_as_float
 import skimage.io as io
-from skimage.filters import LPIFilter2D
+from skimage.filters import LPIFilter2D, wiener
 from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing
 from skimage.color import rgb2gray
 from skimage.transform import *
@@ -14,26 +14,31 @@ from scipy import misc
 import cv2 as cv
 from skimage.util import crop
 from skimage.exposure import match_histograms
-
+from skimage import color, data, restoration
+from scipy.signal import convolve2d
 
 
 #goruntu iyileştirme islemleri,filtreler
 #'Wiener', "Prewitt V", "Prewitt H", "Hessian", 'Median', "Meijering", "Frangi", "Laplacian", "Gaussian", 'Sato'
 
-def wiener_filter(filename,amount):
-    image = Image.open(filename)
-    image = asarray(image)
-    image = rgb2gray(image)
-    psf=np.ones((5,5))/25
-    image=skimage.filters.wiener(image,impulse_response=psf)
-    image = Image.fromarray(image)
-    image.save(filename)
+def wiener_filter(filename):
     return filename
-def prewitt_v(filename,amount):
-    pass
 
-def prewitt_h(filename,amount):
-    pass
+def prewitt_V(filename):
+    img=asarray(Image.open(filename))
+    img=rgb2gray(img)
+    img=filters.prewitt_v(img)
+    plt.imshow(img)
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    return filename
+
+def prewitt_H(filename):
+    img = asarray(Image.open(filename))
+    img = rgb2gray(img)
+    img = filters.prewitt_h(img)
+    plt.imshow(img)
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    return filename
 
 def hessian_filter(filename,amount):
     pass
