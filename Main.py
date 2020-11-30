@@ -3,16 +3,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image, ImageOps
 from numpy import asarray
-from skimage import data, io, filters, feature, exposure, color, util, img_as_float
+from skimage import data, io, filters, feature, exposure, color, util, img_as_float, morphology
 import skimage.io as io
+from skimage.color.adapt_rgb import adapt_rgb, each_channel
 from skimage.filters import LPIFilter2D, wiener
-from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing
+from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing, convex_hull, \
+    convex_hull_image, disk, black_tophat, opening, skeletonize_3d
 from skimage.color import rgb2gray, rgba2rgb
 from skimage.transform import *
 import scipy
 from scipy import misc
 import cv2 as cv
-from skimage.util import crop
+from skimage.util import crop, invert
 from skimage.exposure import match_histograms
 from skimage import color, data, restoration
 from scipy.signal import convolve2d
@@ -208,14 +210,137 @@ def plot_equalized_histogram(image,reference,matched_image):
 
 #yogunluk donusumu işlemleri (degerleri kullanıcı verebilmeli)
 
-#morfolojik işlemler (10 farklı morfolojik işlem icermeli)
-from skimage.morphology import square,skeletonize_3d,thin,disk, dilation,erosion,skeletonize
-from skimage.util import invert
+def rescale_int(filename,val1,val2):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=exposure.rescale_intensity(image,out_range=(val1,val2))
+    image = Image.fromarray(image)
+    image.save(filename)
+    return filename
 
-#new_image = dilation(image)
-#new_image=erosion(image)
-#image=thin(data.horse())
-#image=skeletonize_3d(data.horse())
+def adjust_ga(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=exposure.adjust_gamma(image)
+    plt.imsave(filename, image)
+    return filename
 
-#insta filtresi oluştur.
+def adjust_lo(filename,gain=1):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=exposure.adjust_log(image,gain=gain)
+    plt.imsave(filename,image)
+    return filename
+
+def adjust_sig(filename,cutoff=0.5,gain=10):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=exposure.adjust_sigmoid(image,cutoff=cutoff,gain=gain)
+    plt.imsave(filename,image)
+    return filename
+
+
+#10 morphological operations
+
+@adapt_rgb(each_channel)
+def erosion_each(image):
+    return morphology.erosion(image)
+
+def erosion_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    erosion=erosion_each(image)
+    plt.imsave(filename, erosion)
+    return filename
+
+#Dilation enlarges bright regions and shrinks dark regions.
+@adapt_rgb(each_channel)
+def dilation_each(image):
+    return morphology.dilation(image,disk(6))
+
+def dilation_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    dilation=dilation_each(image)
+    plt.imsave(filename, dilation)
+    return filename
+
+#I THINK THEYRE DONE
+def thin_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image = invert(asarray(image))
+    image=rgb2gray(image)
+    thin=morphology.thin(image)
+    plt.imsave(filename, thin,cmap='gray')
+    return filename
+
+#I THINK THEYRE DONE
+def skeletonize_func(filename):
+    image = Image.open(filename)
+    image = invert(asarray(image))
+    image=rgb2gray(image)
+    skeletonize=morphology.skeletonize(image)
+    plt.imsave(filename, skeletonize,cmap='gray')
+    return filename
+
+#I THINK THEYRE DONE
+def skeletonize3d_func(filename):
+    image = Image.open(filename)
+    image = invert(asarray(image))
+    image=rgb2gray(image)
+    skeletonize=morphology.skeletonize_3d(image)
+    plt.imsave(filename, skeletonize,cmap='gray')
+    return filename
+
+#Opening can remove small bright spots and connect small dark cracks.
+#defined as an erosion followed by a dilation
+def opening_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=rgb2gray(image)
+    image=morphology.opening(image,disk(4))
+    plt.imsave(filename, image,cmap='gray')
+    return filename
+
+# Closing can remove small dark spots and connect small bright cracks.
+#defined as a dilation followed by an erosion
+def closing_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=rgb2gray(image)
+    closed=morphology.closing(image,disk(6))
+    plt.imsave(filename, closed,cmap='gray')
+    return filename
+
+#The convex_hull_image is the set of pixels included in the
+# smallest convex polygon that surround all white pixels in the input image
+def convex_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image=rgb2gray(image)
+    image=convex_hull_image(image)
+    plt.imsave(filename, image,cmap='gray')
+    return filename
+
+#defined as the image minus its morphological opening. This operation returns
+# the bright spots of the image that are smaller than the structuring element.
+def white_top_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image = rgb2gray(image)
+    image=morphology.white_tophat(image,disk(6))
+    plt.imsave(filename, image,cmap='gray')
+    return filename
+
+#defined as its morphological closing minus the original image. This operation returns
+# the dark spots of the image that are smaller than the structuring element.
+def black_top_func(filename):
+    image = Image.open(filename)
+    image = asarray(image)
+    image = rgb2gray(image)
+    image=black_tophat(image)
+    plt.imsave(filename, image,cmap='gray')
+    return filename
+
 

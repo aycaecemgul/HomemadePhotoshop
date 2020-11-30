@@ -1,16 +1,18 @@
 import base64
-import base64
 import io
-import os
 import PIL
 from PIL import Image
 import PySimpleGUI as sg
+import matplotlib.pyplot as plt
 import cv2 as cv
 import numpy as np
 from numpy import asarray
+from skimage.color import rgb2gray
 from skimage.transform import rotate
 import Main
 from io import BytesIO
+from skimage.morphology import square,skeletonize_3d,thin,disk, dilation,erosion,skeletonize
+from skimage.util import invert
 
 def main():
     sg.theme("Black")
@@ -80,8 +82,9 @@ def main():
             sg.Text("Choose an image to equalize" ,size=(24, 1)), sg.Input(key='-FILE2-', enable_events=True), sg.FileBrowse(),
             sg.Button("Equalize", size=(8, 1), key="-HISTO-APPLY-", enable_events=True)
         ],
-        [sg.Text("Histogram Equalization Plot"),
-         sg.Button("Create",size=(8, 1), key="-HISTO-PLOT-APPLY-", enable_events=True)],
+        [
+            sg.Text("Histogram Equalization Plot"),
+            sg.Button("Create",size=(8, 1), key="-HISTO-PLOT-APPLY-", enable_events=True)],
         [
             sg.HorizontalSeparator(color="White")
         ],
@@ -91,11 +94,16 @@ def main():
         ],
         [
              sg.Text("Choose a filter:",size=(12, 1)),
-             sg.Combo(['Sobel',"Prewitt V","Prewitt H", "Hessian",'Median', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
+
+            # Görüntü iyileştirme işlemleri
+            sg.Combo(['Sobel',"Prewitt V","Prewitt H", "Hessian",'Median', "Meijering","Frangi","Laplacian", "Gaussian",'Sato'], enable_events=True,size=(17, 4), key='-IYI-COMBO-'),
              sg.Button("Apply", size=(8, 1), key="-IYILESTIRME-APPLY-", enable_events=True),
              sg.VSeperator(),
-             sg.Combo(["", "", "", "", "", ""], size=(17, 3), enable_events=True, key="-YOG-COMBO-"),
-             sg.Button("Apply", size=(10, 1), key="-YOG-APPLY-", enable_events=True)
+
+            # Yoğunluk dönüşümü işlemleri
+            sg.Combo(["Rescale Intensity", "Adjust Gamma", "Adjust Log", "Adjust Sigmoid"], size=(17, 3), enable_events=True, key="-YOG-COMBO-"),
+             sg.Input(key="-EXPO-IN1-",size=(5,1)),sg.Input(key="-EXPO-IN2-",size=(5,1)),
+             sg.Button("Apply", size=(8, 1), key="-YOG-APPLY-", enable_events=True)
         ],
         [
             sg.HorizontalSeparator(color="White")
@@ -106,7 +114,7 @@ def main():
             sg.Combo(['Dilation', 'Erosion', 'Thin','Skeletonize','Skeletonize-3D',
                       'Opening',"Closing","Convex Hull","White Tophat","Black Tophat"],
                      size=(17, 4), key='-MORP-COMBO-',enable_events=True),
-         sg.Button("Apply", size=(10, 1), key="-IYILESTIRME-APPLY-", enable_events=True)
+         sg.Button("Apply", size=(10, 1), key="-MORP-APPLY-", enable_events=True)
          ],
         [
             sg.HorizontalSeparator(color="White")
@@ -263,8 +271,76 @@ def main():
             elif values['-IYI-COMBO-']=='Sato':
                 filename = Main.sato_filter(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+        #"Rescale Intensity", "Adjust Gamma", "Adjust Log", "Adjust Sigmoid"
+        elif event=="-YOG-APPLY-":
+            v1=values["-EXPO-IN1-"]
+            v2=values["-EXPO-IN2-"]
 
+            if values["-YOG-COMBO-"]=="Rescale Intensity":
+                v1 = float(v1) / 100
+                v2 = float(v2) / 100
+                filename=Main.rescale_int(filename,v1,v2)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values["-YOG-COMBO-"]=="Adjust Gamma":
+
+                filename=Main.adjust_ga(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values["-YOG-COMBO-"]=="Adjust Log":
+                v1 = float(v1) / 100
+                filename = Main.adjust_lo(filename,v1)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values["-YOG-COMBO-"]=="Adjust Sigmoid":
+                v1 = float(v1) / 100
+                v2=float(v2)/10
+                filename=Main.adjust_sig(filename,v1,v2)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        #'Dilation', 'Erosion', 'Thin','Skeletonize','Skeletonize-3D',
+        #'Opening',"Closing","Convex Hull","White Tophat","Black Tophat"],
+
+        elif event=="-MORP-APPLY-":
+            if values['-MORP-COMBO-'] == "Dilation":
+                filename=Main.dilation_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Erosion":
+                filename=Main.erosion_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == 'Thin':
+                filename=Main.thin_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Skeletonize":
+                filename = Main.skeletonize_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Skeletonize-3D":
+                filename = Main.skeletonize3d_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Opening":
+                filename = Main.opening_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Closing":
+                filename = Main.closing_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Convex Hull":
+                filename = Main.convex_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "White Tophat":
+                filename = Main.white_top_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+            elif values['-MORP-COMBO-'] == "Black Tophat":
+                filename = Main.black_top_func(filename)
+                window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
     window.close()
-
 main()
