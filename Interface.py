@@ -276,13 +276,10 @@ def main():
             v2=values["-EXPO-IN2-"]
 
             if values["-YOG-COMBO-"]=="Rescale Intensity":
-                v1 = float(v1) / 100
-                v2 = float(v2) / 100
-                filename=Main.rescale_int(filename,v1,v2)
+                filename=Main.rescale_int(filename,int(v1),int(v2))
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values["-YOG-COMBO-"]=="Adjust Gamma":
-
                 filename=Main.adjust_ga(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 

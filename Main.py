@@ -15,7 +15,7 @@ import scipy
 from scipy import misc
 import cv2 as cv
 from skimage.util import crop, invert
-from skimage.exposure import match_histograms
+from skimage.exposure import match_histograms, rescale_intensity
 from skimage import color, data, restoration
 from scipy.signal import convolve2d
 
@@ -214,17 +214,16 @@ def plot_equalized_histogram(image,reference,matched_image):
 
 #yogunluk donusumu işlemleri (degerleri kullanıcı verebilmeli)
 
+
+#DONE
 def rescale_int(filename,val1,val2):
-    image = Image.open(filename)
-    image = asarray(image)
-    image=exposure.rescale_intensity(image,out_range=(val1,val2))
-    image = Image.fromarray(image)
-    image.save(filename)
+    image = asarray(Image.open(filename))
+    image=rescale_intensity(image,in_range=(val1,val2))
+    plt.imsave(filename,image)
     return filename
 
 def adjust_ga(filename):
-    image = Image.open(filename)
-    image = asarray(image)
+    image = asarray(Image.open(filename))
     image=exposure.adjust_gamma(image)
     plt.imsave(filename, image)
     return filename
