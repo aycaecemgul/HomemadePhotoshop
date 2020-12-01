@@ -280,17 +280,17 @@ def main():
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values["-YOG-COMBO-"]=="Adjust Gamma":
-                filename=Main.adjust_ga(filename)
+                filename=Main.adjust_ga(filename,float(v1),float(v2))
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values["-YOG-COMBO-"]=="Adjust Log":
-                v1 = float(v1) / 100
+                v1 = float(v1)
                 filename = Main.adjust_lo(filename,v1)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
             elif values["-YOG-COMBO-"]=="Adjust Sigmoid":
-                v1 = float(v1) / 100
-                v2=float(v2)/10
+                v1 = float(v1)
+                v2=float(v2)
                 filename=Main.adjust_sig(filename,v1,v2)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
@@ -337,6 +337,10 @@ def main():
             elif values['-MORP-COMBO-'] == "Black Tophat":
                 filename = Main.black_top_func(filename)
                 window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event=="-INSTA-APPLY-":
+            filename = Main.insta_func(filename)
+            window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
     window.close()
 main()

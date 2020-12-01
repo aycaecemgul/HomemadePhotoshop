@@ -1,7 +1,8 @@
+import PIL
 import skimage
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image, ImageOps
+from PIL import Image, ImageOps, ImageEnhance
 from numpy import asarray
 from skimage import data, io, filters, feature, exposure, color, util, img_as_float, morphology
 import skimage.io as io
@@ -47,14 +48,13 @@ def prewitt_H(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#DONE
 def hessian_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
     img = filters.hessian(img,mode="reflect")
     plt.imsave(filename,img,cmap="gray")
     return filename
-#DONE
+
 def median_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
@@ -62,7 +62,7 @@ def median_filter(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#DONE
+
 def meijering_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
@@ -70,7 +70,7 @@ def meijering_filter(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#DONE
+
 def frangi_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
@@ -102,7 +102,8 @@ def sato_filter(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#resize,rotation,cropping,swirling, gibi 5 farklı donusum islemi
+#donusum islemleri
+
 def rotate_image_90(filename):
     image = Image.open(filename)
     image = asarray(image)
@@ -222,16 +223,16 @@ def rescale_int(filename,val1,val2):
     plt.imsave(filename,image)
     return filename
 
-def adjust_ga(filename):
+def adjust_ga(filename,v1,v2):
     image = asarray(Image.open(filename))
-    image=exposure.adjust_gamma(image)
+    image=exposure.adjust_gamma(image,gamma=v1,gain=v2) #default values are 1
     plt.imsave(filename, image)
     return filename
 
-def adjust_lo(filename,gain=1):
+def adjust_lo(filename,v1):
     image = Image.open(filename)
     image = asarray(image)
-    image=exposure.adjust_log(image,gain=gain)
+    image=exposure.adjust_log(image,gain=v1) #default value is 1
     plt.imsave(filename,image)
     return filename
 
@@ -259,7 +260,7 @@ def erosion_func(filename):
 #Dilation enlarges bright regions and shrinks dark regions.
 @adapt_rgb(each_channel)
 def dilation_each(image):
-    return morphology.dilation(image,disk(6))
+    return morphology.dilation(image)
 
 def dilation_func(filename):
     image = Image.open(filename)
@@ -339,11 +340,21 @@ def white_top_func(filename):
 #defined as its morphological closing minus the original image. This operation returns
 # the dark spots of the image that are smaller than the structuring element.
 def black_top_func(filename):
-    image = Image.open(filename)
-    image = asarray(image)
+
+    image = asarray(Image.open(filename))
     image = rgb2gray(image)
     image=black_tophat(image)
     plt.imsave(filename, image,cmap='gray')
     return filename
 
 
+
+def insta_func(filename):
+    filename=dilation_func(filename)
+    filename=adjust_lo(filename, 1)
+    image = Image.open(filename)
+    converter=ImageEnhance.Color(image)
+    image=converter.enhance(1.8)
+    image=asarray(image)
+    plt.imsave(filename, image)
+    return filename
