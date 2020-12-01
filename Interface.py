@@ -11,7 +11,6 @@ from skimage.color import rgb2gray
 from skimage.transform import rotate
 import Main
 from io import BytesIO
-from skimage.morphology import square,skeletonize_3d,thin,disk, dilation,erosion,skeletonize
 from skimage.util import invert
 
 def main():
