@@ -343,4 +343,5 @@ def main():
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
 
     window.close()
+    
 main()

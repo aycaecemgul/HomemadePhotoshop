@@ -23,6 +23,7 @@ from scipy.signal import convolve2d
 
 #goruntu iyileştirme islemleri,filtreler
 # "Sobel, ""Prewitt V", "Prewitt H", "Hessian", 'Median', "Meijering", "Frangi", "Laplacian", "Gaussian", 'Sato'
+
 @adapt_rgb(each_channel)
 def sobel_each(image):
     return sobel(image)
@@ -40,6 +41,7 @@ def prewitt_V(filename):
     img=prewitt_v(img)
     plt.imsave(filename,img,cmap="gray")
     return filename
+
 
 def prewitt_H(filename):
     img = asarray(Image.open(filename))
@@ -78,7 +80,6 @@ def frangi_filter(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#DONE ?
 def laplacian_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
@@ -86,7 +87,7 @@ def laplacian_filter(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#DONE
+
 def gaussian_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
@@ -94,7 +95,7 @@ def gaussian_filter(filename):
     plt.imsave(filename,img,cmap="gray")
     return filename
 
-#DONE
+
 def sato_filter(filename):
     img = asarray(Image.open(filename))
     img = rgb2gray(img)
@@ -177,7 +178,9 @@ def rescale_image(filename,amount):
     image_resized=Image.fromarray(image_resized)
     image_resized.save(filename)
     return filename
+
 #histogram equalization resimleri gösterme
+
 def equalize_histogram(filename, filename2):
     image = Image.open(filename)
     image = asarray(image)
@@ -193,6 +196,7 @@ def equalize_histogram(filename, filename2):
 
 
 #histogram eşitleme grafiği gösterme
+
 def plot_equalized_histogram(image,reference,matched_image):
 
     fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(8, 8))
@@ -213,10 +217,9 @@ def plot_equalized_histogram(image,reference,matched_image):
     return plt
 
 
-#yogunluk donusumu işlemleri (degerleri kullanıcı verebilmeli)
+#yogunluk donusumu işlemleri
 
 
-#DONE
 def rescale_int(filename,val1,val2):
     image = asarray(Image.open(filename))
     image=rescale_intensity(image,in_range=(val1,val2))
@@ -269,7 +272,7 @@ def dilation_func(filename):
     plt.imsave(filename, dilation)
     return filename
 
-#I THINK THEYRE DONE
+
 def thin_func(filename):
     image = Image.open(filename)
     image = asarray(image)
@@ -279,7 +282,7 @@ def thin_func(filename):
     plt.imsave(filename, thin,cmap='gray')
     return filename
 
-#I THINK THEYRE DONE
+
 def skeletonize_func(filename):
     image = Image.open(filename)
     image = invert(asarray(image))
@@ -288,7 +291,7 @@ def skeletonize_func(filename):
     plt.imsave(filename, skeletonize,cmap='gray')
     return filename
 
-#I THINK THEYRE DONE
+
 def skeletonize3d_func(filename):
     image = Image.open(filename)
     image = invert(asarray(image))
@@ -299,6 +302,7 @@ def skeletonize3d_func(filename):
 
 #Opening can remove small bright spots and connect small dark cracks.
 #defined as an erosion followed by a dilation
+
 def opening_func(filename):
     image = Image.open(filename)
     image = asarray(image)
@@ -346,8 +350,6 @@ def black_top_func(filename):
     image=black_tophat(image)
     plt.imsave(filename, image,cmap='gray')
     return filename
-
-
 
 def insta_func(filename):
     filename=dilation_func(filename)
