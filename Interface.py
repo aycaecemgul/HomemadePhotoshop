@@ -122,6 +122,12 @@ def main():
          sg.Button("Apply", size=(8, 1), key="-INSTA-APPLY-", enable_events=True)
          ],
         [
+            sg.HorizontalSeparator(color="White")
+        ],
+        [
+            sg.Text("Active Contour", size=(27, 1)),
+         sg.Button("Apply", size=(8, 1), key="-CONTOUR-APPLY-", enable_events=True)],
+        [
             sg.Button("Save", size=(8, 1)),
          sg.Button("Exit", size=(8, 1))
         ]
@@ -341,6 +347,9 @@ def main():
         elif event=="-INSTA-APPLY-":
             filename = Main.insta_func(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event=="-CONTOUR-APPLY-":
+            Main.active_contour_model(filename)
 
     window.close()
     
