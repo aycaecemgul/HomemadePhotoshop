@@ -3,15 +3,8 @@ import io
 import PIL
 from PIL import Image
 import PySimpleGUI as sg
-import matplotlib.pyplot as plt
-import cv2 as cv
-import numpy as np
-from numpy import asarray
-from skimage.color import rgb2gray
-from skimage.transform import rotate
 import Main
-from io import BytesIO
-from skimage.util import invert
+
 
 def main():
     sg.theme("Black")
@@ -121,6 +114,12 @@ def main():
         [sg.Text("Try Ayça's special instagram filter!", size=(27, 1)),
          sg.Button("Apply", size=(8, 1), key="-INSTA-APPLY-", enable_events=True)
          ],
+        [
+            sg.HorizontalSeparator(color="White")
+        ],
+        [
+            sg.Text("Active Contour", size=(27, 1)),
+         sg.Button("Apply", size=(8, 1), key="-CONTOUR-APPLY-", enable_events=True)],
         [
             sg.Button("Save", size=(8, 1)),
          sg.Button("Exit", size=(8, 1))
@@ -341,6 +340,9 @@ def main():
         elif event=="-INSTA-APPLY-":
             filename = Main.insta_func(filename)
             window['-IMAGE-'].update(data=convert_to_bytes(filename, resize=(400, 400)))
+
+        elif event=="-CONTOUR-APPLY-":
+            Main.active_contour_model(filename)
 
     window.close()
     

@@ -1,16 +1,13 @@
-import PIL
-import skimage
 import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image, ImageOps, ImageEnhance
+from PIL import Image, ImageEnhance
 from numpy import asarray
 from skimage import data, io, filters, feature, exposure, color, util, img_as_float, morphology
-import skimage.io as io
 from skimage.color.adapt_rgb import adapt_rgb, each_channel
-from skimage.filters import LPIFilter2D, wiener, sobel, prewitt_v
-from skimage.morphology import closing, square, area_closing, area_opening, diameter_closing, convex_hull, \
-    convex_hull_image, disk, black_tophat, opening, skeletonize_3d
+from skimage.filters import  sobel, prewitt_v, gaussian, threshold_otsu
+from skimage.morphology import closing, area_closing, area_opening, convex_hull, convex_hull_image, disk, black_tophat, opening, skeletonize_3d
 from skimage.color import rgb2gray, rgba2rgb
+
 from skimage.transform import *
 import scipy
 from scipy import misc
@@ -18,7 +15,7 @@ import cv2 as cv
 from skimage.util import crop, invert
 from skimage.exposure import match_histograms, rescale_intensity
 from skimage import color, data, restoration
-from scipy.signal import convolve2d
+
 
 
 #goruntu iyileştirme islemleri,filtreler
@@ -272,13 +269,14 @@ def dilation_func(filename):
     plt.imsave(filename, dilation)
     return filename
 
-
 def thin_func(filename):
     image = Image.open(filename)
     image = asarray(image)
     image = invert(asarray(image))
     image=rgb2gray(image)
-    thin=morphology.thin(image)
+    thresh = threshold_otsu(image)
+    binary = image > thresh
+    thin=morphology.thin(binary)
     plt.imsave(filename, thin,cmap='gray')
     return filename
 
@@ -287,7 +285,9 @@ def skeletonize_func(filename):
     image = Image.open(filename)
     image = invert(asarray(image))
     image=rgb2gray(image)
-    skeletonize=morphology.skeletonize(image)
+    thresh = threshold_otsu(image)
+    binary = image > thresh
+    skeletonize=morphology.skeletonize(binary)
     plt.imsave(filename, skeletonize,cmap='gray')
     return filename
 
@@ -296,7 +296,9 @@ def skeletonize3d_func(filename):
     image = Image.open(filename)
     image = invert(asarray(image))
     image=rgb2gray(image)
-    skeletonize=morphology.skeletonize_3d(image)
+    thresh = threshold_otsu(image)
+    binary = image > thresh
+    skeletonize=morphology.skeletonize_3d(binary)
     plt.imsave(filename, skeletonize,cmap='gray')
     return filename
 
@@ -321,14 +323,17 @@ def closing_func(filename):
     plt.imsave(filename, closed,cmap='gray')
     return filename
 
+
 #The convex_hull_image is the set of pixels included in the
 # smallest convex polygon that surround all white pixels in the input image
 def convex_func(filename):
     image = Image.open(filename)
     image = asarray(image)
     image=rgb2gray(image)
-    image=convex_hull_image(image)
-    plt.imsave(filename, image,cmap='gray')
+    thresh = threshold_otsu(image)
+    binary = image > thresh
+    image=convex_hull_image(binary == 0)
+    plt.imsave(filename, image,cmap="gray")
     return filename
 
 #defined as the image minus its morphological opening. This operation returns
@@ -351,6 +356,7 @@ def black_top_func(filename):
     plt.imsave(filename, image,cmap='gray')
     return filename
 
+
 def insta_func(filename):
     filename=dilation_func(filename)
     filename=adjust_lo(filename, 1)
@@ -360,3 +366,5 @@ def insta_func(filename):
     image=asarray(image)
     plt.imsave(filename, image)
     return filename
+
+
