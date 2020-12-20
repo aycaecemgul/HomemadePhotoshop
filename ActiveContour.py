@@ -7,15 +7,14 @@ from skimage.segmentation import active_contour
 from matplotlib import pyplot as plt
 
 def active_contour_model(filename):
-    image = asarray(Image.open(filename))
-    img = rgb2gray(image)
+    img = asarray(Image.open(filename))
 
-    s = np.linspace(0, 2 * np.pi, 400)
-    r = 230 + 100 * np.sin(s)
-    c = 330 + 100 * np.cos(s)
+    s = np.linspace(0, 6 * np.pi, 400)
+    r = 120 + 100 * np.sin(s)
+    c = 150 + 100 * np.cos(s)
     init = np.array([r, c]).T
 
-    snake = active_contour(gaussian(img, 3),
+    snake = active_contour(gaussian(img, 3,multichannel=False),
                            init, alpha=0.015, beta=10, gamma=0.001,
                            coordinates='rc')
 
@@ -29,4 +28,4 @@ def active_contour_model(filename):
     plt.show()
 
 
-active_contour_model("cat.png")
+active_contour_model("mona.jpg")
